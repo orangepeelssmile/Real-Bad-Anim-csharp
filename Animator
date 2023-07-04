@@ -1,0 +1,106 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Animator : MonoBehaviour
+{
+    
+    [Header("Idle")]
+    public Sprite[] idleSprites;
+    float idleTimeInbetween;
+    public float timeInbetweenIdleSprites;
+    int currentIdleSprite;
+    public int amntOfIdleSprites;
+
+    [Header("Used By All")]
+    public SpriteRenderer spriteRender;
+    public PlayerMovement pm;
+
+    [Header("Walk")]
+    public Sprite[] walkSprites;
+    float walkTimeInbetween;
+    public float timeInbetweenWalkSprites;
+    int currentWalkSprite;
+    public int amntOfWalkSprites;
+
+    [Header("Jump")]
+    public Sprite[] jumpSprites;
+    float jumpTimeInbetween;
+    public float timeInbetweenJumpSprites;
+    int currentJumpSprite;
+    public int amntOfJumpSprites;
+    bool isGrounded;
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+    public float radius;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        idleTimeInbetween = timeInbetweenIdleSprites;
+        walkTimeInbetween = timeInbetweenWalkSprites;
+        jumpTimeInbetween = timeInbetweenJumpSprites;
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, radius, groundLayer);
+
+        if (isGrounded == false)
+        {
+          spriteRender.sprite = jumpSprites[currentJumpSprite];
+
+          jumpTimeInbetween -= Time.deltaTime;
+
+          if (jumpTimeInbetween <= 0)
+          {
+              currentJumpSprite += 1;
+              jumpTimeInbetween = timeInbetweenJumpSprites;
+          }
+
+          if (currentJumpSprite == amntOfJumpSprites)
+          {
+              currentJumpSprite = 0;
+          }
+        }
+
+        if (pm.move == 0)
+        {
+          spriteRender.sprite = idleSprites[currentIdleSprite];
+
+          idleTimeInbetween -= Time.deltaTime;
+
+          if (idleTimeInbetween <= 0)
+          {
+            currentIdleSprite += 1;
+            idleTimeInbetween = timeInbetweenIdleSprites;
+          }
+
+          if (currentIdleSprite == amntOfIdleSprites)
+          {
+            currentIdleSprite = 0;
+          }
+        }
+
+        else
+        {
+          spriteRender.sprite = walkSprites[currentWalkSprite];
+
+          walkTimeInbetween -= Time.deltaTime;
+
+          if (walkTimeInbetween <= 0)
+          {
+              currentWalkSprite += 1;
+              walkTimeInbetween = timeInbetweenWalkSprites;
+          }
+
+          if (currentWalkSprite == amntOfWalkSprites)
+          {
+              currentWalkSprite = 0;
+          }
+        }
+    }
+}
